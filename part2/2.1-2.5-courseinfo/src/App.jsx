@@ -6,13 +6,20 @@ const Part = ({ part }) => (
   </p>
 )
 
-const Content = ({ parts }) => (
-  <div>
-    {parts.map(part => <Part key={part.id} part={part} />)}
-  </div>
-)
+const Content = ({ parts }) => {
+  const total = parts.reduce((acc, crr) => acc + crr.exercises, 0);
 
-// const Total = (props) => <p>Number of exercises {props.total}</p>
+  return (
+    <div>
+      {parts.map(part => <Part key={part.id} part={part} />)}
+      <Total total={total} />
+    </div>
+  )
+}
+
+
+
+const Total = ({ total }) => <strong>Number of exercises {total}</strong>
 
 const Course = ({ course }) => {
   return (
@@ -42,6 +49,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
