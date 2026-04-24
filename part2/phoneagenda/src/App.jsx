@@ -13,6 +13,12 @@ const App = () => {
   const addNumber = e => {
     e.preventDefault()
 
+    const isRepited = persons.some(person => person.name === newName);
+    if (isRepited) {
+      alert(`${newName} is already added to phonebook`)
+      return;
+    }
+
     const newNumber = {
       name: newName
     }
