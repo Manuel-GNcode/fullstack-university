@@ -3,18 +3,15 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
-import axios from 'axios'
+import phoneService from './services/phone'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [filtred, setFiltred] = useState([])
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+    phoneService.getAll()
+      .then(initialPhones => setPersons(initialPhones))
   }, [])
 
   const [newName, setNewName] = useState('')
@@ -52,11 +49,8 @@ const App = () => {
       number: newNumber
     }
 
-    axios
-      .post('http://localhost:3000/persons', newContact)
-      .then(response => {
-        setPersons([...persons].concat(response.data))
-      })
+    phoneService.create(newContact)
+      .then(phoneReturned => setPersons([...persons].concat(phoneReturned)))
 
     setNewFilter('')
     setNewName('')
