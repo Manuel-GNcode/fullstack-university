@@ -38,19 +38,22 @@ const App = () => {
   const addNumber = e => {
     e.preventDefault()
 
-    const isRepited = persons.some(person => person.name === newName);
-    if (isRepited) {
-      alert(`${newName} is already added to phonebook`)
-      return;
-    }
-
     const newContact = {
       name: newName,
       number: newNumber
     }
 
-    phoneService.create(newContact)
-      .then(phoneReturned => setPersons([...persons].concat(phoneReturned)))
+    const isRepited = persons.find(person => person.name === newName);
+    if (isRepited) {
+      if (window.confirm('is already added to phonebook, replace?')) {
+        phoneService.update(isRepited.id, newContact)
+          .then(phoneUpdated => setPersons(persons.map(person => person.id === phoneUpdated.id ? phoneUpdated : person)))
+      } else return
+    }
+    else {
+      phoneService.create(newContact)
+        .then(phoneReturned => setPersons([...persons].concat(phoneReturned)))
+    }
 
     setNewFilter('')
     setNewName('')
