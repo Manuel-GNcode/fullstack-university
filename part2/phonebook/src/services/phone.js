@@ -12,7 +12,13 @@ const create = (phone) => {
   return request.then(response => response.data)
 }
 
+const deleteById = id => {
+  const request = axios.delete(urlBase + id)
+  return request.then(response => response.data)
+}
+
 export default {
   getAll,
-  create
+  create,
+  deleteById
 }

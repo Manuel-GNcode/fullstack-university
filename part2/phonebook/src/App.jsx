@@ -57,6 +57,14 @@ const App = () => {
     setNewNumber('')
   }
 
+  const deleteNumber = id => {
+    const numberToDelete = persons.find(p => p.id === id)
+    if (window.confirm('Delete ' + numberToDelete.name)) {
+      phoneService.deleteById(id)
+        .then(phoneDeleted => setPersons(persons.filter(person => person.id !== phoneDeleted.id)))
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -69,7 +77,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons persons={newFilter ? filtred : persons} />
+      <Persons deleteNumber={deleteNumber} persons={newFilter ? filtred : persons} />
     </div>
   )
 }
