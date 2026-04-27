@@ -14,14 +14,12 @@ const App = () => {
       .get('http://localhost:3000/persons')
       .then(response => {
         setPersons(response.data)
-        setFiltred(response.data)
       })
   }, [])
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-
 
   const handleFilter = e => {
     const filter = e.target.value
@@ -50,13 +48,16 @@ const App = () => {
     }
 
     const newContact = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber
     }
 
-    setPersons([...persons].concat(newContact))
-    setFiltred([...persons].concat(newContact))
+    axios
+      .post('http://localhost:3000/persons', newContact)
+      .then(response => {
+        setPersons([...persons].concat(response.data))
+      })
+
     setNewFilter('')
     setNewName('')
     setNewNumber('')
@@ -74,7 +75,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons persons={filtred} />
+      <Persons persons={newFilter ? filtred : persons} />
     </div>
   )
 }
