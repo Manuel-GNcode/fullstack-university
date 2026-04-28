@@ -4,6 +4,7 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
 import phoneService from './services/phone'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -17,6 +18,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState({ message: null, succes: null })
 
   const handleFilter = e => {
     const filter = e.target.value
@@ -35,6 +37,17 @@ const App = () => {
     setNewNumber(e.target.value)
   }
 
+  const handleNotification = (message, succes) => {
+    setNotification({
+      message,
+      succes
+    })
+
+    setTimeout(() => {
+      setNotification({ message: null, succes: null })
+    }, 4000);
+  }
+
   const addNumber = e => {
     e.preventDefault()
 
@@ -47,12 +60,18 @@ const App = () => {
     if (isRepited) {
       if (window.confirm('is already added to phonebook, replace?')) {
         phoneService.update(isRepited.id, newContact)
-          .then(phoneUpdated => setPersons(persons.map(person => person.id === phoneUpdated.id ? phoneUpdated : person)))
+          .then(phoneUpdated => {
+            setPersons(persons.map(person => person.id === phoneUpdated.id ? phoneUpdated : person))
+            handleNotification(`Updated ${phoneUpdated.name}`, true)
+          })
       } else return
     }
     else {
       phoneService.create(newContact)
-        .then(phoneReturned => setPersons([...persons].concat(phoneReturned)))
+        .then(phoneReturned => {
+          setPersons([...persons].concat(phoneReturned))
+          handleNotification(`Added ${phoneReturned.name}`, true)
+        })
     }
 
     setNewFilter('')
@@ -64,13 +83,17 @@ const App = () => {
     const numberToDelete = persons.find(p => p.id === id)
     if (window.confirm('Delete ' + numberToDelete.name)) {
       phoneService.deleteById(id)
-        .then(phoneDeleted => setPersons(persons.filter(person => person.id !== phoneDeleted.id)))
+        .then(phoneDeleted => {
+          setPersons(persons.filter(person => person.id !== phoneDeleted.id))
+          handleNotification(`Deleted ${phoneDeleted.name}`, true)
+        })
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification.message} succes={notification.succes} />
 
       <Filter newValue={newFilter} onChange={handleFilter} />
 
