@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import axios from 'axios'
 import Country from "./components/Country"
+import CountriesList from "./components/CountriesList"
 
 const App = () => {
   const [countries, setCountries] = useState([])
@@ -28,6 +29,11 @@ const App = () => {
     setMatchCountries(countries.filter(c => c.name.common.includes(capitalizeWords(newFilter))))
   }
 
+  const showCountry = countryName => {
+    setFilter(countryName)
+    setMatchCountries(countries.filter(c => c.name.common.includes(capitalizeWords(countryName))))
+  }
+
   return (
     <div>
       <label>
@@ -39,7 +45,7 @@ const App = () => {
           : matchCountries.length > 10
             ? <p>Too many matches, specify another filter</p>
             : matchCountries.length > 1
-              ? <ul>{matchCountries.map(mc => <li key={mc.name.common}>{mc.name.common}</li>)}</ul>
+              ? <CountriesList countries={matchCountries} showCountry={showCountry} />
               : matchCountries.length === 1
                 ? <Country country={matchCountries[0]} />
                 : <p>No countries for that filter</p>
