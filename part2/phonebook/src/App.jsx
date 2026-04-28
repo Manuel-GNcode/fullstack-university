@@ -81,11 +81,16 @@ const App = () => {
 
   const deleteNumber = id => {
     const numberToDelete = persons.find(p => p.id === id)
+
     if (window.confirm('Delete ' + numberToDelete.name)) {
       phoneService.deleteById(id)
         .then(phoneDeleted => {
           setPersons(persons.filter(person => person.id !== phoneDeleted.id))
           handleNotification(`Deleted ${phoneDeleted.name}`, true)
+        }).catch(error => {
+          console.log(error);
+          handleNotification(`information of ${numberToDelete.name} has already been removed`, false)
+          setPersons(persons.filter(person => person.id !== numberToDelete.id))
         })
     }
   }
